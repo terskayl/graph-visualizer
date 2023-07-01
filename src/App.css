@@ -3,9 +3,5 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
-
-canvas {
-  display: block;
-  margin: 0px;
+  height: 80vh;
 }

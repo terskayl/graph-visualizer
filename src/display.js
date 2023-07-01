@@ -7,9 +7,12 @@ document.addEventListener("DOMContentLoaded",() => {
         Bodies = Matter.Bodies,
         Body = Matter.Body,
         Composite = Matter.Composite,
-        Constraint = Matter.Constraint;
+        Constraint = Matter.Constraint,
+        World = Matter.World;
 
     const engine = Engine.create()
+    engine.gravity.y = 0;
+
     const element = document.querySelector('#root');
     const render = Render.create({
         element,
@@ -23,14 +26,15 @@ document.addEventListener("DOMContentLoaded",() => {
           }
       });
 
+
+
+      
     Composite.add(engine.world, [
         Bodies.rectangle(400, 0, 800, 50, { isStatic: true, restitution: 1, friction: 0 }),
         Bodies.rectangle(400, 600, 800, 50.5, { isStatic: true, restitution: 1, friction: 0 }),
         Bodies.rectangle(800, 300, 50, 600, { isStatic: true, restitution: 1, friction: 0 }),
         Bodies.rectangle(0, 300, 50, 600, { isStatic: true, restitution: 1, friction: 0 })
     ]);
-
-    //Render.run(render);
 
     const runner = Runner.create();
 
@@ -50,8 +54,6 @@ document.addEventListener("DOMContentLoaded",() => {
     Composite.add(engine.world, mouseConstraint)
 
     render.mouse = mouse;
-
-    engine.gravity.y = 0;
 
     const numVertices = 20;
 
@@ -94,13 +96,22 @@ document.addEventListener("DOMContentLoaded",() => {
                     render: {
                         type: 'line',
                         strokeStyle: 'dark-gray',
-                        lineWidth: 1
+                        lineWidth: 15 * Math.random() + 1
                     }
                 })
             }
         }
     }
 
+    constraints.sort((a,b) => a.render.lineWidth - b.render.lineWidth);
+    for (let index = 0; index < constraints.length; index++) {
+       setTimeout( () => {
+        World.remove(engine.world, constraints[index])
+       }, 1000*index)
+    }
+
+
+    
     const applyGravity = (bodyA, bodyB, gravConstant) => {
         const gravitationalConstant = gravConstant
         const dx = bodyB.position.x - bodyA.position.x;
